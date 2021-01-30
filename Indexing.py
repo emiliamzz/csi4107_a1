@@ -21,43 +21,21 @@
 
 #- id of the tweet will be by line number in the txt file
 import math
-import re
-import string
-import unidecode
-from Stemmer import PorterStemmer
+from Functions import Functions
 
-tweets = open("tweets.txt", encoding="utf-8")
+tweets = open("Tweets.txt", encoding="utf-8")
 # open our dictionary of words
-dictionary = open("dictionary.txt", "r")
-
+dictionary = open("Dictionary.txt", "r")
+functions = Functions()
 idfDict = {}
-ifDict = {}
+tfDict = {}
 for word in dictionary:
     idfDict[word] = 0
     line = 0
     # calculate the tf for each word
     for tweet in tweets:
-        # PREPROCESSING EACH TWEET (again)
-        # remove links
-        tweet = re.sub(r'https?:\/\/.\S*', '', tweet, flags=re.MULTILINE)
-        tweet = re.sub(r'www.\S*', '', tweet, flags=re.MULTILINE)
-        tweet = re.sub(r'\S*.html', '', tweet, flags=re.MULTILINE)
-        # switch to roman alphabet
-        tweet = unidecode.unidecode(tweet)
-        # remove punctuation, digits
-        tweet = tweet.translate(str.maketrans('', '', string.punctuation))
-        tweet = tweet.translate(str.maketrans('', '', string.digits))
-        # make everything lowercase
-        tweet = tweet.lower()
-        # split into array
-        tokened = tweet.split()
-        # stem
-        porter = PorterStemmer()
-        tokened = [porter.stem(word, 0, len(word)-1) for word in tokened]
-        # remove stop words
-        stop = open("StopWords.txt").read().split()
-        tokened = list(set(tokened)-set(stop))
-
+        # preprocess the tweet
+        tokened = functions.preprocess(tweet)
         # calculate the length
         length = len(tokened)
         # if the word from the dictionary is in the tweet, calculate the tf and add 1 for the idf
