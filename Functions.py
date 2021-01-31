@@ -25,8 +25,6 @@ class Functions:
         porter = PorterStemmer()
         dictionary = [porter.stem(word, 0, len(word)-1) for word in dictionary]
         # remove stop words
-        dictionary = list(dict.fromkeys(dictionary))
         stop = open("StopWords.txt").read().split()
-        # remove duplicates
         dictionary = list(set(dictionary)-set(stop))
         return dictionary

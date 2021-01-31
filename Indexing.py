@@ -1,25 +1,39 @@
 import math
 from Functions import Functions
 
-tweets = open("Tweets.txt", encoding="utf-8").read().split('\n')
-dictionary = open("Dictionary.txt", "r").read().split('\n')
+dictionary = []
 functions = Functions()
-indexFile = {}
+index = {}
+lineCount = 0
+tweets = open("Tweets.txt", encoding="utf-8").read().split('\n')
+wordCount = {}
+
+for tweet in tweets:
+    lineCount += 1
+    # preprocess the tweet
+    tokened = functions.preprocess(tweet)
+    # create another array of the tweet removing all duplicates
+    noDup = list(dict.fromkeys(tokened))
+    # calculate the length of the tweet
+    length = len(tokened)
+    for word in noDup:
+        # calculate the tf and store it
+        tf = tokened.count(word) / float(length)
+        # put it into the dictionary without overlap
+        if word not in dictionary:
+            dictionary.append(word)
+            index[word] = [None, {}]
+            wordCount[word] = 0
+        index[word][1][str(lineCount)] = tf
+        # add 1 to the number of tweets that uses this word
+        wordCount[word] += 1
+# put in alphabetical order
+dictionary = sorted(dictionary)
+# put the dictionary into a text file
+with open('Dictionary.txt', 'w') as filehandle:
+    for item in dictionary:
+        filehandle.write('%s\n' % item)
+# calculate the idf
 for word in dictionary:
-    count = 0
-    line = 0
-    tfDict = {}
-    # calculate the tf for each word
-    for tweet in tweets:
-        # preprocess the tweet
-        tokened = functions.preprocess(tweet)
-        # calculate the length
-        length = len(tokened)
-        # if the word from the dictionary is in the tweet, calculate the tf and add 1 for the idf
-        if word in tokened:
-            tf = tokened.count(word) / float(length)
-            tfDict[line] = tf
-            count += 1
-        line += 1
-    idf = math.log2(line / count)
-    indexFile[word] = [idf, tfDict]
+    idf = math.log2(lineCount / wordCount[word])
+    index[word][0] = idf
