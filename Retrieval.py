@@ -3,42 +3,23 @@ import operator
 import pickle
 from Functions import Functions
 
-# Can we somehow save the inverted index to a text file so that we don't have to constantly go through the above?
-
-# For each query, your system will produce a ranked list of documents, starting with the most similar to the
-# query and ending with the least similar. For the query terms, you can use a modified tf-idf weighting scheme
-# w_iq = (0.5 + 0.5 tf_iq)∙idf_i
-# Retrieval and Ranking:  Use the inverted index (from step 2) to find the limited set of documents that
-# contain at least one of the query words. Compute the similarity scores between a query and each document
-# (using cosine or other method). 
-
- 
-
-# •       Input: One query and the Inverted Index (from Step2)
-
-# •       Output: Similarity values between the query and each of the documents.
-#                 Rank the documents in decreasing order of similarity scores.
-
-
-
-tweets = open("Tweets.txt", encoding="utf-8").read().split('\n')
+cosDict = {}
+documents = []
 functions = Functions()
+queryDict = {}
+tweets = open("Tweets.txt", encoding="utf-8").read().split('\n')
 # Open index from pickle file
 f = open("Index.p", "rb")
 index = pickle.load(f)
 f.close()
 # Get user input
 query = input("Enter query: ")
-# Calculate query weight
-# w_iq = (0.5 + 0.5 tf_iq)∙idf_i
-# tf = wordCount / totalWords
-# idf = index[word][0]
+# Preprocess the query
 preproQ = functions.preprocess(query)
 length = len(preproQ)
-queryDict = {}
-documents = []
+# Calculate the query weight
 for word in preproQ:
-    # check if word is in index
+    # Check if word is in index
     if word in index:
         tf = preproQ.count(word) / float(length)
         idf = index[word][0]
@@ -46,14 +27,15 @@ for word in preproQ:
         queryDict[word] = w
         documents += index[word][1].keys()
     else:
+        # Remove the word from the query
         preproQ.remove(word)
+# Quit on an invalid query
 if len(preproQ) == 0:
     print("No results match your search")
     exit()
+# Remove duplicate document IDs
 documents = list(dict.fromkeys(documents))
-cosDict = {}
 # Rank the similarity using cosine method
-# CosSim(d_j, q) = sum(w_ij * w_iq) / sqrt(sum((w_ij)^2) * bqw)
 bqw = 0
 for value in queryDict.values():
     bqw += pow(value, 2)
@@ -72,12 +54,12 @@ for document in documents:
 # Sort by similarity
 cosDict = dict(sorted(cosDict.items(), key=operator.itemgetter(1), reverse=True))
 # Print out the top 1000 documents into a text file
-f = open("Output.txt", "w")
+f = open("Output.txt", "w", encoding="utf-8")
 count = 0
 for item in cosDict:
     if count == 1000:
         break
-    tweet = tweets[int(item)-1].decode(encoding="UTF-8")
+    tweet = tweets[int(item)-1]
     f.write(tweet + "\n")
     count += 1
 f.close()
