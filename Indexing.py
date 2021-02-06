@@ -1,4 +1,5 @@
 import math
+import pickle
 from Functions import Functions
 
 dictionary = []
@@ -37,3 +38,7 @@ with open('Dictionary.txt', 'w') as filehandle:
 for word in dictionary:
     idf = math.log2(lineCount / wordCount[word])
     index[word][0] = idf
+#save to pickle file
+f = open("Index.p", "wb")
+pickle.dump(index, f)
+f.close()
