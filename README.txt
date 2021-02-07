@@ -14,7 +14,6 @@
 Names:
 Emilia Zielinska || 300018129
 
-How to run:
-- run pip3 install unidecode
-- run Indexing.py
-- run Microblog.py
+Notes:
+- pip3 install unidecode
+- python3 <fileName>.py <arguments>

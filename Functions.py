@@ -8,9 +8,10 @@ from Stemmer import PorterStemmer
 
 class Functions:
 
-    def preprocess(self, s):
+    def preprocess(self, s, stopWords):
         """
         s is a string
+        stopWords is a string of the name for the file of stop words
         The output is a list of preprocessed words taken from the inputted string.
         """
         # Remove links
@@ -30,20 +31,22 @@ class Functions:
         porter = PorterStemmer()
         dictionary = [porter.stem(word, 0, len(word)-1) for word in dictionary]
         # Remove stop words
-        stop = open("StopWords.txt").read().split()
+        stop = open(stopWords).read().split()
         dictionary = list(set(dictionary)-set(stop))
         return dictionary
 
-    def retrieve(self, query):
+    def retrieve(self, query, i, stopWords):
         """
         query is a string
+        i is a string of the name for the file of documents
+        stopWords is a string of the name for the file of stop words
         The output is a dictionary with max size 1000 with keys being tweet IDs and values being a calculated cosSim.
         The dictionary is outputted from highest cosSim to lowest cosSim. It will exit if no tweets match the query.
         """
         cosDict = {}
         documents = []
         queryDict = {}
-        tweets = open("Tweets.txt", encoding="utf-8").read().split('\n')
+        tweets = open(i, encoding="utf-8").read().split('\n')
         # Remove the first character because it's weird
         tweets[0] = tweets[0][1:len(tweets[0])]
         # Open index from pickle file
@@ -52,7 +55,7 @@ class Functions:
         f.close()
 
         # Preprocess the query
-        preproQ = self.preprocess(query)
+        preproQ = self.preprocess(query, stopWords)
         length = len(preproQ)
 
         # Calculate the query weight
@@ -85,7 +88,7 @@ class Functions:
             for word in preproQ:
                 if document in index[word][1]:
                     top += queryDict[word] * index[word][0] * index[word][1][document]
-            tweet = self.preprocess(tweets[int(document)-1])
+            tweet = self.preprocess(tweets[int(document)-1], stopWords)
             bdw = 0
             for word in tweet:
                 bdw += pow(index[word][0] * index[word][1][document], 2)
