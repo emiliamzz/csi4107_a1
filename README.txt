@@ -17,3 +17,8 @@ Emilia Zielinska || 300018129
 Notes:
 - pip3 install unidecode
 - python3 <fileName>.py <arguments>
+
+Evaluation:
+$ ./trec_eval.exe -m map -m P.10 ../Trec_microblog11-qrels.txt ../Results.txt
+map                     all     0.2058
+P_10                    all     0.2286
