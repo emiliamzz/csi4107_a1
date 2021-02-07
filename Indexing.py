@@ -28,12 +28,13 @@ for tweet in tweets:
         index[word][1][str(lineCount)] = tf
         # add 1 to the number of tweets that uses this word
         wordCount[word] += 1
-# put in alphabetical order
-dictionary = sorted(dictionary)
-# put the dictionary into a text file
-with open('Dictionary.txt', 'w') as filehandle:
-    for item in dictionary:
-        filehandle.write('%s\n' % item)
+
+# NOTE: uncomment the following to print the dictionary in alphabetical order to a txt file called Dictionary.txt
+# dictionary = sorted(dictionary)
+# with open('Dictionary.txt', 'w') as filehandle:
+#     for item in dictionary:
+#         filehandle.write('%s\n' % item)
+
 # calculate the idf
 for word in dictionary:
     idf = math.log2(lineCount / wordCount[word])
