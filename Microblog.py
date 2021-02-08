@@ -3,9 +3,9 @@ from Functions import Functions
 
 def main(i, tweets, stopWords):
     """
-    i is the name of the file containing test queries
-    tweets is the name of the file containing the documents
-    stopWords is the name of the file containing the stop words
+    i is the file containing test queries
+    tweets is the file containing the documents
+    stopWords is the file containing the stop words
     This script takes in a file of test queries to run and retrieve the 1000
     most relevant documents for that each query. It then outputs the results
     in a text file with each result in the following format:

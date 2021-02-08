@@ -11,7 +11,7 @@ class Functions:
     def preprocess(self, s, stopWords):
         """
         s is a string
-        stopWords is a string of the name for the file of stop words
+        stopWords is the file of stop words
         The output is a list of preprocessed words taken from the inputted string.
         """
         # Remove links
@@ -38,8 +38,8 @@ class Functions:
     def retrieve(self, query, i, stopWords):
         """
         query is a string
-        i is a string of the name for the file of documents
-        stopWords is a string of the name for the file of stop words
+        i is the file of documents
+        stopWords is the file of stop words
         The output is a dictionary with max size 1000 with keys being tweet IDs and values being a calculated cosSim.
         The dictionary is outputted from highest cosSim to lowest cosSim. It will exit if no tweets match the query.
         """

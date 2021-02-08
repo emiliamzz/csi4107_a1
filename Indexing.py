@@ -5,8 +5,8 @@ from Functions import Functions
 
 def main(i, stopWords):
     """
-    i is the name of the file containing the documents (tweets)
-    stopWords is the name of the file containing the list of stop words
+    i is the file containing the documents (tweets)
+    stopWords is the file containing the list of stop words
     This script takes in a file of documents and creates a dictionary
     and an inverted index from the words in the documents.
     It then outputs the inverted index as a pickle file.
