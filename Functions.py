@@ -8,46 +8,56 @@ from Stemmer import PorterStemmer
 
 class Functions:
 
-    # s is the string to preprocess
-    # This function takes in a string and returns an array of words that have been preprocessed
-    def preprocess(self, s):
-        # remove links
+    def preprocess(self, s, stopWords):
+        """
+        s is a string
+        stopWords is the file of stop words
+        The output is a list of preprocessed words taken from the inputted string.
+        """
+        # Remove links
         s = re.sub(r'https?:\/\/.\S*', '', s, flags=re.MULTILINE)
         s = re.sub(r'www.\S*', '', s, flags=re.MULTILINE)
         s = re.sub(r'\S*.html', '', s, flags=re.MULTILINE)
-        # switch to roman alphabet
+        # Switch to roman alphabet
         s = unidecode.unidecode(s)
-        # remove punctuation, digits
+        # Remove punctuation, digits
         s = s.translate(str.maketrans('', '', string.punctuation))
         s = s.translate(str.maketrans('', '', string.digits))
-        # make everything lowercase
+        # Make everything lowercase
         s = s.lower()
-        # split into array
+        # Split into array
         dictionary = s.split()
-        # stem using the porter stemmer
+        # Stem using the porter stemmer
         porter = PorterStemmer()
         dictionary = [porter.stem(word, 0, len(word)-1) for word in dictionary]
-        # remove stop words
-        stop = open("StopWords.txt").read().split()
+        # Remove stop words
+        stop = open(stopWords).read().split()
         dictionary = list(set(dictionary)-set(stop))
         return dictionary
 
-    # query is a string
-    # This function takes in a query as an input and returns an array of the top 1000 documents for it
-    def retrieve(self, query):
+    def retrieve(self, query, i, stopWords):
+        """
+        query is a string
+        i is the file of documents
+        stopWords is the file of stop words
+        The output is a dictionary with max size 1000 with keys being tweet IDs and values being a calculated cosSim.
+        The dictionary is outputted from highest cosSim to lowest cosSim. It will exit if no tweets match the query.
+        """
         cosDict = {}
         documents = []
         queryDict = {}
-        tweets = open("Tweets.txt", encoding="utf-8").read().split('\n')
+        tweets = open(i, encoding="utf-8").read().split('\n')
         # Remove the first character because it's weird
         tweets[0] = tweets[0][1:len(tweets[0])]
         # Open index from pickle file
         f = open("Index.p", "rb")
         index = pickle.load(f)
         f.close()
+
         # Preprocess the query
-        preproQ = self.preprocess(query)
+        preproQ = self.preprocess(query, stopWords)
         length = len(preproQ)
+
         # Calculate the query weight
         for word in preproQ:
             # Check if word is in index
@@ -60,12 +70,15 @@ class Functions:
             else:
                 # Remove the word from the query
                 preproQ.remove(word)
+
         # Quit on an invalid query
         if len(preproQ) == 0:
             print("No results match your search")
             exit()
+
         # Remove duplicate document IDs
         documents = list(dict.fromkeys(documents))
+
         # Rank the similarity using cosine method
         bqw = 0
         for value in queryDict.values():
@@ -75,15 +88,17 @@ class Functions:
             for word in preproQ:
                 if document in index[word][1]:
                     top += queryDict[word] * index[word][0] * index[word][1][document]
-            tweet = self.preprocess(tweets[int(document)-1])
+            tweet = self.preprocess(tweets[int(document)-1], stopWords)
             bdw = 0
             for word in tweet:
                 bdw += pow(index[word][0] * index[word][1][document], 2)
             bottom = math.sqrt(bdw * bqw)
             cos = top / bottom
             cosDict[document] = cos
+            
         # Sort by similarity
         cosDict = dict(sorted(cosDict.items(), key=operator.itemgetter(1), reverse=True))
+
         # Create a dictionary with the tweet ID and the cosSim to three decimal places
         output = {}
         count = 0

@@ -1,0 +1,24 @@
+   - write a README file (plain text or Word format) [15 points for this report] including:
+
+         * your names and student numbers. Specify how the tasks were divided between the team members
+         (if this info is not provided, the penalty is 10 points).
+
+         * a detailed note about the functionality of your programs
+
+         * complete instructions on how to run them
+
+         * Explain the algorithms, data structures, and optimizations that you used in each of the three steps.
+           How big was the vocabulary? Include a sample of 100 tokens from your vocabulary.
+           Include the first 10 answers to queries 3 and 20. Discuss your final results.
+
+Names:
+Emilia Zielinska || 300018129
+
+Notes:
+- pip3 install unidecode
+- python3 <fileName>.py <arguments>
+
+Evaluation:
+$ ./trec_eval.exe -m map -m P.10 ../Trec_microblog11-qrels.txt ../Results.txt
+map                     all     0.2058
+P_10                    all     0.2286
