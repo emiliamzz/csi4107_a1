@@ -6,6 +6,14 @@ Robert Zhang || 300077171
 
 ----------------------------------------------------------------------------------------------------
 
+PLEASE NOTE:
+
+Stemmer.py is not our work. It is downloaded from
+https://tartarus.org/martin/PorterStemmer/python.txt
+and is required to be in the submitted zip file in order for the program to work.
+
+----------------------------------------------------------------------------------------------------
+
 How tasks were divided:
 
 For this assignment, we met up online every Tuesday to edit the code together using Visual Studio
