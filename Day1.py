@@ -37,6 +37,7 @@ def main(resultss, tweetss, queriess):
     results = open(resultss, encoding="utf-8").read().split("\n")
     t = open(tweetss, encoding="utf-8").read().split("\n")
     queries = open(queriess, encoding="utf-8").read().split("</top>\n\n<top>")
+    f = open("Results-1.txt", "w", encoding="utf-8")
     vectorizer = Vectorizer()
     # Remove the first character from tweets bc it's weird
     t[0] = t[0][1:len(t[0])]
@@ -58,14 +59,14 @@ def main(resultss, tweetss, queriess):
         queryNums = []
         queryTweets = []
         for r in results:
-            liner = r.split()
-            # For each result for the current query, place the tweet and its id in lists
-            if int(liner[0]) == topicId:
-                queryTweets.append(tweets[liner[2]])
-                queryNums.append(liner[2])
-                results.pop(r)
-            elif int(liner[0]) > topicId:
-                break
+            if r:
+                liner = r.split()
+                # For each result for the current query, place the tweet and its id in lists
+                if int(liner[0]) == topicId:
+                    queryTweets.append(tweets[liner[2]])
+                    queryNums.append(liner[2])
+                elif int(liner[0]) > topicId:
+                    break
         # Vectorize the tweets
         vectorizer.bert(queryTweets)
         tweetVector = vectorizer.vectors
@@ -76,7 +77,6 @@ def main(resultss, tweetss, queriess):
         # Sort by most relevant to least relevant
         relevantResults = dict(sorted(relevantResults.items(), key=operator.itemgetter(1), reverse=True))
         # Print the results for the current query to a text file
-        f = open("Results-1.txt", "w", encoding="utf-8")
         count = 0
         for result in relevantResults:
             count += 1
@@ -86,5 +86,5 @@ def main(resultss, tweetss, queriess):
     
 
 if __name__ == "__main__":
-    # main("./Results.txt", "./Trec_microblog11.txt", "./topics_MB1-49.txt")
-    main(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]))
+    main("./Results.txt", "./Trec_microblog11.txt", "./topics_MB1-49.txt")
+    # main(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]))

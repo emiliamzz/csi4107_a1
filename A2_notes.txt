@@ -1,11 +1,16 @@
-DAY 1:s
+DAY 1:
 "Use you system for Assignment 1 to produce initial results (1000 documents for each query), then re-rank them based on a new similarity scores between the query and each selected document. You can produce vectors for the query and each of the selected documents using various versions of sent2vec, doc2vec, BERT, or the universal sentence encoder. You can also use pre-trained word embeddings and assemble them to produce query/document embeddings."
 - Take the results from Results.txt and re-rank them
 - This can be done in a separate .py file
 - We can re-rank using sent2vec, doc2vec, BERT, or the universal sentence encoder
 - Perform tests and record the score (Day 1 only)
 
+$ ./trec_eval.exe -m map -m P.10 ../Trec_microblog11-qrels.txt ../Results-1.txt
+map                     all     0.0488
+P_10                    all     0.0122
+
 DAY 2:
+"Query vector modification or query expansion based on pretrained word embeddings or other methods. For example, add synonyms to the query if there is similarity with more than one word in the query (or with the whole query vector). You can use pre-trained word embeddings (such as FastText, word2vec, GloVe, and others), preferably some build on a Twitter corpus, to be closer to your collection of documents."
 - Modify / expand the query (ex. add synonyms)
 - We can use FastText, word2vec, or GloVe for this
 - Perform tests and record scores (Day 2 only and both Day 1 and 2)
