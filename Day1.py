@@ -11,26 +11,6 @@ def main(resultss, tweetss, queriess):
     This script takes in a file of results and re-ranks them using a distilled version of BERT through the use of the sent2vec python library.
     It then outputs the re-ranked results file.
 
-    The inputted file of results must be a text file and must have each result in the following format:
-    **topic_id** Q0 **tweet_id** **rank** **cosSim** PyGER
-
-    Each result must be separated by a new line.
-
-    The inputted file of documents must be a text file and must have each tweet in the following format:
-    **tweet_id**    **tweet**
-
-    Each document must be separated by a new line.
-
-    The inputted file of queries must be a text file and it must have each query in the following format:
-    <top>
-    <num> Number: MB**topic_id** </num>
-    <title> **query** </title>
-    <querytime> **query_time** </querytime>
-    <querytweettime> **query_tweet_time** </querytweettime>
-    </top>
-
-    Each query must be separated by a double new line.
-
     Please note that this does take around an hour and a half to run.
     """
     # Open all relevant files
@@ -51,13 +31,10 @@ def main(resultss, tweetss, queriess):
         # Extract the necessary info from the query
         topicId = int(query.split("<num> Number: MB")[1].split(" </num>")[0])
         search = query.split("<title> ")[1].split(" </title")[0]
-        # Vectorize the query
-        vectorizer.bert([search])
-        queryVector = vectorizer.vectors[0]
         # Create dictionary / lists for the output
         relevantResults = {}
         queryNums = []
-        queryTweets = []
+        queryTweets = [search]
         for r in results:
             if r:
                 liner = r.split()
@@ -67,13 +44,14 @@ def main(resultss, tweetss, queriess):
                     queryNums.append(liner[2])
                 elif int(liner[0]) > topicId:
                     break
-        # Vectorize the tweets
+        # Vectorize the tweets and the query
         vectorizer.bert(queryTweets)
         tweetVector = vectorizer.vectors
         # For each tweet, calculate the distance between it and the query
         for i in range(len(queryNums)):
-            distance = spatial.distance.cosine(queryVector, tweetVector[i])
-            relevantResults[queryNums[i]] = distance
+            current = queryTweets[i+1]
+            distance = spatial.distance.cosine(tweetVector[0], tweetVector[i+1])
+            relevantResults[queryNums[i]] = 1 - distance
         # Sort by most relevant to least relevant
         relevantResults = dict(sorted(relevantResults.items(), key=operator.itemgetter(1), reverse=True))
         # Print the results for the current query to a text file
@@ -86,5 +64,5 @@ def main(resultss, tweetss, queriess):
     
 
 if __name__ == "__main__":
-    main("./Results.txt", "./Trec_microblog11.txt", "./topics_MB1-49.txt")
-    # main(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]))
+    # main("./Results.txt", "./Trec_microblog11.txt", "./topics_MB1-49.txt")
+    main(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]))
