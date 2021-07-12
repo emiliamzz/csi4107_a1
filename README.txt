@@ -1,8 +1,8 @@
-Student names:
+Created by:
 
-Emilia Zielinska || 300018129
-Gabrielle Naubert || 300015305
-Robert Zhang || 300077171
+https://github.com/emiliamzz/
+https://github.com/GabNau
+https://github.com/BobsterBobby
 
 ----------------------------------------------------------------------------------------------------
 
